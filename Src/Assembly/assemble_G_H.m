@@ -4,7 +4,7 @@
 %    xn    Nodes' x-coordinates.
 %    yn    Nodes' y-coordinates.
 
-function [G,H] = asseble_G_H(met, xn, yn)
+function [G,H] = assemble_G_H(met, xn, yn)
 
     xn(end+1) = xn(1);
     yn(end+1) = yn(1);

@@ -82,7 +82,7 @@ B_ordered = reorder_boundary(B_nodes, x, y);
 xB = x(B_ordered);
 yB = y(B_ordered);
 
-[G_bem, H_bem] = BEM_G_H(1, xB, yB); %1 means linear element
+[G_bem, H_bem] = assemble_G_H(1, xB, yB); %1 means linear element
 
 % Riporta G e H nell'ordine di B_nodes (non B_ordered)
 % costruisce la permutazione
