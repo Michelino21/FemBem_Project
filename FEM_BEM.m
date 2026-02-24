@@ -1,15 +1,17 @@
 %% FEM_BEM.m
 % Coupling FEM-BEM per condensatore a facce piane parallele 2D
-clear all; close all;
+clear all; close all; clc;
 addpath(genpath('src'));
 
 %% === PROBLEM PARAMETERS ===
-dx   = 0.02;   % lunghezza piastre
-dy   = 0.1;    % distanza tra le piastre
-delx = dx/10;
+dx   = 0.10;          % lunghezza piastre
+dy   = 0.01;          % separazione piastre  →  rapporto dx/dy = 10
+delx = 0.002;         % passo mesh (20 elementi lungo dx, 2 lungo dy)
 dely = delx;
-Lx   = dx + 2*delx;
-Ly   = dy + 2*dely;
+
+margine = 3 * dy;     % = 0.03 m per lato
+Lx = dx + 2*margine;  % = 0.16 m
+Ly = dy + 2*margine;  % = 0.07 m
 
 e0  = 8.85e-12;
 er  = 1;
