@@ -17,6 +17,6 @@ function B_ordered = reorder_boundary(B_nodes, x, y)
     [~, o] = sort(yB(lft_idx), 'descend'); lft_idx = lft_idx(o);
 
     % Rimuove angoli duplicati
-    ordered_idx = [bot_idx; rgt_idx(2:end); top_idx(2:end); lft_idx(2:end)];
+    ordered_idx = [bot_idx; rgt_idx(2:end); top_idx(2:end); lft_idx(2:end-1)];
     B_ordered   = B_nodes(ordered_idx);
 end
