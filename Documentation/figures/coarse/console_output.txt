@@ -1,0 +1,28 @@
+Nelement = 896
+Nnode = 495
+E_teorico = 100 V/m
+Fattore Soglia = 5%
+E_soglia    = 105 V/m
+Elementi con E > soglia: 0
+Elementi con E <= soglia: 80
+{Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('triangulation')" style="font-weight:bold">triangulation</a>
+The input triangulation is empty.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('triplot', '/Applications/MATLAB_R2024b.app/toolbox/matlab/graphics/graphics/specgraph/triplot.m', 72)" style="font-weight:bold">triplot</a> (<a href="matlab: opentoline('/Applications/MATLAB_R2024b.app/toolbox/matlab/graphics/graphics/specgraph/triplot.m',72,0)">line 72</a>)
+    tr = triangulation(tri,x(:),y(:));
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('FEM_BEM', '/Users/matteo/Documents/AAA Doc Teo/Polimi/Magistrale/COMPUTATIONAL ELECTROMAGNETICS/PROJECT FEM_BEM COUPLING/FEM_BEM.m', 243)" style="font-weight:bold">FEM_BEM</a> (<a href="matlab: opentoline('/Users/matteo/Documents/AAA Doc Teo/Polimi/Magistrale/COMPUTATIONAL ELECTROMAGNETICS/PROJECT FEM_BEM COUPLING/FEM_BEM.m',243,0)">line 243</a>)
+triplot(conn(bad_elm,:), x, y, 'r');
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+} 
+FEM_BEM
+Nelement = 896
+Nnode = 495
+E_teorico = 100 V/m
+Fattore Soglia = 5%
+E_soglia    = 105 V/m
+Elementi con E > soglia: 0
+Elementi con E <= soglia: 80
+C (FEM region) = 116.8737 pF/m
+C (inside) = 88.5 pF/m
+C (NO bad el) = 88.5 pF/m

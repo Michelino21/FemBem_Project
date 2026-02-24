@@ -3,10 +3,27 @@
 clear all; close all; clc;
 addpath(genpath('src'));
 
+%% SALVATAGGI
+
+% Scegli il nome della cartella
+folder_name = './Documentation/figures/coarse';  % cambia qui per ogni run
+
+% Crea la cartella se non esiste
+if ~exist(folder_name, 'dir')
+    mkdir(folder_name);
+end
+
+% Nome del file di log
+log_file = fullfile(folder_name, 'console_output.txt');
+
+% Attiva il salvataggio della console
+diary(log_file)
+diary on
+
 %% === PROBLEM PARAMETERS ===
 dx   = 0.10;          % lunghezza piastre
 dy   = 0.01;          % separazione piastre  →  rapporto dx/dy = 10
-delx = 0.002;         % passo mesh (20 elementi lungo dx, 2 lungo dy)
+delx = 0.005;         % passo mesh (20 elementi lungo dx, 2 lungo dy)
 dely = delx;
 
 margine = 3 * dy;     % = 0.03 m per lato
@@ -139,11 +156,6 @@ for e = 1:M
 end
 Emag = sqrt(Ex.^2 + Ey.^2);
 
-% --- Capacitanza ---
-C = (1/(V1-V2)^2) * sum(eps_e .* (Ex.^2 + Ey.^2) .* area);
-disp(['C = ' num2str(C*1e12) ' pF/m'])
-C_small = (1/(V1-V2)^2) * sum(eps_e(d_elm) .* (Ex(d_elm).^2 + Ey(d_elm).^2) .* area(d_elm));
-disp(['C = ' num2str(C_small*1e12) ' pF/m'])
 
 % --- Plot potenziale (mappa colori) ---
 [up, xp, yp] = create2darray(x, y, u, delx, dely);
@@ -212,22 +224,58 @@ xlabel('|E| (V/m)'); ylabel('Conteggio elementi');
 title('Distribuzione campo elettrico in d\_elm')
 
 % Trova gli elementi problematici
-soglia = 50;  % V/m, circa 5x il valore teorico
-bad_elm = d_elm(Emag(d_elm) > soglia);
+E_teorico = (V1 - V2) / dy;
+fattore_soglia = 5; % in percentuale
+soglia = (1 + fattore_soglia/100) * E_teorico;
+bad_elm  = d_elm(Emag(d_elm) > soglia);
 good_elm = d_elm(Emag(d_elm) <= soglia);
 
+disp(['E_teorico = ' num2str(E_teorico) ' V/m'])
+disp(['Fattore Soglia = ' num2str(fattore_soglia) '%'])
+disp(['E_soglia    = ' num2str(soglia)    ' V/m'])
 disp(['Elementi con E > soglia: ' num2str(length(bad_elm))])
 disp(['Elementi con E <= soglia: ' num2str(length(good_elm))])
+
+
+% Visualizza dove sono i bad elements
+
+figure
+triplot(conn, x, y, 'Color', [0.8 0.8 0.8]); hold on
+if(length(bad_elm) > 0)
+    triplot(conn(bad_elm,:), x, y, 'r');
+end
+plot(x(ptop_node), y(ptop_node), 'k', 'linewidth', 3)
+plot(x(pbottom_node), y(pbottom_node), 'k', 'linewidth', 3)
+title('Elementi con E anomalo (rosso)')
+
+
+% --- Capacitanza ---
+% Totale (dominio FEM)
+C = (1/(V1-V2)^2) * sum(eps_e .* (Ex.^2 + Ey.^2) .* area);
+disp(['C (FEM region) = ' num2str(C*1e12) ' pF/m'])
+
+% Interna al condensator
+C_small = (1/(V1-V2)^2) * sum(eps_e(d_elm) .* (Ex(d_elm).^2 + Ey(d_elm).^2) .* area(d_elm));
+disp(['C (inside) = ' num2str(C_small*1e12) ' pF/m'])
 
 % Capacità escludendo elementi singolari
 C_clean = (1/(V1-V2)^2) * sum(eps_e(good_elm) .* ...
           (Ex(good_elm).^2 + Ey(good_elm).^2) .* area(good_elm));
-disp(['C_clean = ' num2str(C_clean*1e12) ' pF/m'])
+disp(['C (NO bad el) = ' num2str(C_clean*1e12) ' pF/m'])
 
-% Visualizza dove sono i bad elements
-figure
-triplot(conn, x, y, 'Color', [0.8 0.8 0.8]); hold on
-triplot(conn(bad_elm,:), x, y, 'r');
-plot(x(ptop_node), y(ptop_node), 'k', 'linewidth', 3)
-plot(x(pbottom_node), y(pbottom_node), 'k', 'linewidth', 3)
-title('Elementi con E anomalo (rosso)')
+
+%% SALVATAGGI
+
+% Fine del logging
+diary off
+
+% Salva tutte le figure
+saveas(figure(1), fullfile(folder_name, 'mesh.png'));
+saveas(figure(2), fullfile(folder_name, 'element_quality.png'));
+saveas(figure(3), fullfile(folder_name, 'potential_map.png'));
+saveas(figure(4), fullfile(folder_name, 'potential_contour.png'));
+saveas(figure(5), fullfile(folder_name, 'efield_map.png'));
+saveas(figure(6), fullfile(folder_name, 'q_gamma.png'));
+saveas(figure(7), fullfile(folder_name, 'charge_density.png'));
+saveas(figure(8), fullfile(folder_name, 'E_histogram.png'));
+saveas(figure(9), fullfile(folder_name, 'bad_elements.png'));
