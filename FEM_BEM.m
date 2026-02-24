@@ -1,6 +1,7 @@
 %% FEM_BEM.m
 % Coupling FEM-BEM per condensatore a facce piane parallele 2D
 clear all; close all;
+addpath(genpath('src'));
 
 %% === PROBLEM PARAMETERS ===
 dx   = 0.02;   % lunghezza piastre
@@ -16,16 +17,14 @@ V1  = 1;   % potenziale piastra superiore
 V2  = 0;   % potenziale piastra inferiore
 
 %% === SOLVER PARAMETERS ===
-elm_type = 1; % 1: triangular, 2: quadrilateral
+elm_type = 1; % 1: triangular, 2: quadrilateral %% Only triangular
 
 %% === MESH ===
 if elm_type == 1  % triangular
     [conn, x, y, xmid, ymid, outb_node, ptop_node, pbottom_node, d_elm] = ...
-    meshgen_cap(Lx, Ly, dx, dy, delx, dely);
-elseif elm_type == 2  % quadrilateral
-   [conn,x,y,xmid,ymid,outb_node,ptop_node,pbottom_node,d_elm] = meshgenq_cap(Lx,Ly,dx,dy,delx,dely);        
+    meshgen_cap(Lx, Ly, dx, dy, delx, dely);    
 else
-   disp('Element type can only be triangular or quadriateral.');
+   disp('Element type can only be triangular.');
    return;
 end
 
@@ -42,14 +41,12 @@ F_nodes = setdiff(setdiff(1:N, D_nodes), B_nodes)';
 
 %% === ASSEMBLAGGIO S (matrice FEM globale) ===
 S = sparse(N, N);
+area = zeros(M,1);
 
 for e = 1:M
     if elm_type == 1  % triangular
         Ne = 3;
-        [Ae, ~, ~] = element_matrix_tri(e, x, y, conn, eps_e(e), eps_e(e), 0, 0);
-    elseif elm_type == 2  % quadrilateral
-        Ne = 4;
-        [Ae, ~, ~] = element_matrix_quad(e, x, y, conn, eps(e), eps(e), 0, 0); % element matrix and b-vector
+        [Ae, area(e)] = assemble_S(e, x, y, conn, eps_e(e), eps_e(e), 0);
     end
     
     for i = 1:Ne
