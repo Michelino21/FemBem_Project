@@ -1,28 +1,91 @@
-%\documentclass{cwpreport} % for review/editing/polishing
-%\linespread{1.5}           % for review/editing/polishing
-\documentclass[onecolumn]{cwpreport} % for final draft
-%\documentclass[]{article}
+\documentclass[11pt,onecolumn]{article}
 
-% Packages used by default CWP reports built by M8R
-\usepackage{times,natbib,amsmath,graphicx,color,amssymb,amsbsy,lineno,setspace,algorithm2e,lipsum,hyperref,appendix}
+\newenvironment{cwpabstract}
+{%
+  \begin{list}{}{%
+    \setlength{\leftmargin}{0.32\textwidth} % spostamento laterale
+    \setlength{\rightmargin}{0pt}
+    \setlength{\listparindent}{0pt}
+    \setlength{\itemindent}{0pt}
+    \setlength{\parsep}{0pt}
+  }
+  \item[]
+  \noindent\textbf{ABSTRACT}\par
+  \vspace{0.5em}
+  \normalsize
+}
+{%
+  \end{list}
+}
 
+\newenvironment{cwpkeywords}
+{%
+  \begin{list}{}{%
+    \setlength{\leftmargin}{0.32\textwidth}
+    \setlength{\rightmargin}{0pt}
+  }
+  \item[]\textbf{Key words: }
+}
+{%
+  \end{list}
+}
+
+\usepackage{times}
 \usepackage{xcolor}
 
-% Specific paper formatting for CWP report
-\setlength{\paperwidth}{8.5in}
-\setlength{\paperheight}{11.0in}
-\setlength{\topmargin}{-0.25in}
-\setlength{\textheight}{8.75in}
-\setlength{\textwidth}{6.5in}
-\setlength{\oddsidemargin}{+.015625in}
-\setlength{\evensidemargin}{+.015625in}
+
+\usepackage{geometry}
+\geometry{
+  paperwidth=8.5in,
+  paperheight=11in,
+  top=0.75in,
+  bottom=1.0in,
+  left=1.0in,
+  right=1.0in,
+  textwidth=6.5in,
+  textheight=8.75in
+}
+
+\usepackage{setspace}
+\setstretch{1.0}
+
+
+\usepackage{titlesec}
+
+\titleformat{\section}
+  {\bfseries\normalsize}
+  {\thesection}
+  {1em}
+  {\MakeUppercase}
+
+\titleformat{\subsection}
+  {\bfseries\normalsize}
+  {\thesubsection}
+  {1em}
+  {}
+
+\titleformat{\subsubsection}
+  {\itshape\normalsize}
+  {\thesubsubsection}
+  {1em}
+  {}
+
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{appendix}
+
+% Packages used by default CWP reports built by M8R
+\usepackage{natbib,amsmath,graphicx,color,amssymb,amsbsy,lineno,setspace,algorithm2e,lipsum,hyperref}
+
 
 
 \title{Accoppiamento FEM/BEM: implementazione delle condizioni di dominio aperto nel codice FEM 2D
 elettrostatico \thanks{Progetto realizzato nell'ambito del corso \textit{Computational Electromagnetics}}} 
 
-\author[Matteo Morana]{Matteo Morana \\
-Master Student in Mathematical Engeneering at Politecnico di Milano \\ email matteo.morana@mail.polimi.it} 
+\author{Matteo Morana \\
+Master Student in Mathematical Engeneering at Politecnico di Milano \\ email: matteo.morana@mail.polimi.it}
+
+\date{Febraury 26, 2026}
 
 \begin{document}
 
@@ -30,15 +93,14 @@ Master Student in Mathematical Engeneering at Politecnico di Milano \\ email mat
 \maketitle
 
 
-
-\begin{abstract}
+\begin{cwpabstract}
 \lipsum[2]
-\end{abstract}
+\end{cwpabstract}
 
 
-\begin{keywords}
+\begin{cwpkeywords}
 Keyword1, Keyword2, Keyword3 
-\end{keywords}
+\end{cwpkeywords}
 
 
 \section{Introduction}
@@ -648,6 +710,7 @@ should be approximately uniform in the central region and exhibit concentration 
 edges — a profile that is well known analytically and provides a further qualitative check 
 on the solution.
 
+\newpage
 \subsection{Validation Results}
 
 The coupled FEM-BEM solver is tested on the parallel-plate capacitor described above 
@@ -656,131 +719,230 @@ mesh refinement levels: a coarse mesh with $\delta = 0.005$ m and a fine mesh wi
 $\delta = 0.002$ m. The reference value for the capacitance per unit length, neglecting 
 fringing fields, is $C_{\text{ideal}} = \varepsilon_0\, dx/dy = 88.5$ pF/m.
 
-% ------------------------------------------------------------------
-\textbf{Electric potential.}
-Figures~\ref{fig:potential_coarse} and~\ref{fig:potential_fine} show the potential 
-distribution for the two mesh levels.
+\paragraph{Electric potential.}
+Figures~\ref{fig:potential_comparison} show the electric potential distribution for the 
+two mesh levels. In both cases the potential is monotone between the plates, ranging from 
+$V_2 = 0$ V at the lower plate to $V_1 = 1$ V at the upper plate, and decays smoothly 
+toward $\Gamma$ with no visible oscillations. The equipotential lines are horizontal and 
+uniformly spaced in the central region between the plates, confirming the expected 
+uniform-field behaviour, and curve regularly outward near the plate edges — the 
+characteristic signature of fringing fields. The coarse mesh ($\delta = 0.005$ m) 
+reproduces the overall potential distribution correctly but with noticeably lower 
+resolution: the equipotential lines appear jagged and the field curvature at the edges 
+is poorly resolved. The fine mesh ($\delta = 0.002$ m) produces a significantly smoother 
+solution, capturing both the uniform region and the fringing zone with greater fidelity. 
+This improvement is expected, as the finer discretization provides more degrees of 
+freedom in the regions where the potential gradient changes rapidly.
 
-\begin{figure}[h!]
+
+\begin{figure}[!htbp]
     \centering
-    \begin{subfigure}[b]{0.48\textwidth}
+
+    % ---- Row 1: potential maps ----
+    \begin{subfigure}{0.48\textwidth}
+        \centering
         \includegraphics[width=\textwidth]{figures/coarse/potential_map.png}
-        \caption{Potential map, $\delta = 0.005$ m.}
-        \label{fig:potential_map_coarse}
+        \caption*{$\delta = 0.005$ m}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
+    \begin{subfigure}{0.48\textwidth}
+        \centering
         \includegraphics[width=\textwidth]{figures/fine/potential_map.png}
-        \caption{Potential map, $\delta = 0.002$ m.}
-        \label{fig:potential_map_fine}
+        \caption*{$\delta = 0.002$ m}
     \end{subfigure}
-    \caption{Electric potential distribution. [COMMENTO: il potenziale deve essere 
-    monotono tra le piastre, decadere regolarmente verso $\Gamma$, e non mostrare 
-    oscillazioni. Discutere eventuali differenze tra le due mesh.]}
-    \label{fig:potential_coarse}
-\end{figure}
 
-\begin{figure}[h!]
-    \centering
-    \begin{subfigure}[b]{0.48\textwidth}
+    \vspace{1em}
+
+    % ---- Row 2: equipotential lines ----
+    \begin{subfigure}{0.48\textwidth}
+        \centering
         \includegraphics[width=\textwidth]{figures/coarse/potential_contour.png}
-        \caption{Equipotential lines, $\delta = 0.005$ m.}
+        \caption*{$\delta = 0.005$ m}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
+    \begin{subfigure}{0.48\textwidth}
+        \centering
         \includegraphics[width=\textwidth]{figures/fine/potential_contour.png}
-        \caption{Equipotential lines, $\delta = 0.002$ m.}
+        \caption*{$\delta = 0.002$ m}
     \end{subfigure}
-    \caption{Equipotential lines. [COMMENTO: le linee devono essere orizzontali e 
-    uniformemente spaziate al centro, e incurvarsi regolarmente ai bordi delle piastre 
-    — questa è la firma visiva dei campi di frangia.]}
-    \label{fig:potential_fine}
+
+    \caption{Electric potential distribution (top) and equipotential lines (bottom) for two mesh resolutions.}
+    \label{fig:potential_comparison}
 \end{figure}
-
 % ------------------------------------------------------------------
-\textbf{Electric field.}
-Figures~\ref{fig:efield_coarse} and~\ref{fig:efield_fine} show the electric field 
-magnitude and direction.
+\paragraph{Electric field.}
+Figures~\ref{fig:efield_comparison} show the electric field 
+magnitude and direction for the two mesh levels. In both cases the field is directed 
+vertically between the plates, as expected, with magnitude close to the theoretical 
+value $|\mathbf{E}| = (V_1 - V_2)/dy = 100$ V/m in the central region.
 
-\begin{figure}[h!]
+The coarse mesh ($\delta = 0.005$ m) resolves the field poorly: individual elements 
+show significant variability, with values alternating above and below the expected 
+uniform level, reflecting the inability of the coarse discretization to capture the 
+smooth field gradient accurately. Notably, no element in this case exceeds the 
+threshold $E_{\text{soglia}} = 5 \times E_{\text{teorico}} = 500$ V/m, meaning that 
+the singularity at the plate edges is not resolved at all at this resolution — the 
+mesh is too coarse to capture the field concentration, and the anomalous elements 
+are simply smeared into their neighbours.
+
+The fine mesh ($\delta = 0.002$ m) produces a markedly better result: the field is 
+visibly uniform across the central region between the plates, and the quiver plot 
+confirms the vertical orientation of $\mathbf{E}$ away from the edges. A small number 
+of elements near the plate corners exceed the threshold, and their spatial distribution 
+matches precisely the physically expected pattern — field concentration at the tips of 
+infinitely thin conductors is a well-known singularity of this geometry and is not an 
+artefact of the numerical method. The fact that these anomalous elements appear only 
+with the finer mesh, and are localised at the corners, confirms that the coupled solver 
+is behaving correctly: the finer discretization resolves the singularity rather than 
+hiding it.
+
+
+\begin{figure}[h]
     \centering
-    \begin{subfigure}[b]{0.48\textwidth}
+
+    % --- Prima riga ---
+    \begin{subfigure}{0.48\textwidth}
+        \centering
         \includegraphics[width=\textwidth]{figures/coarse/efield_map.png}
-        \caption{$\delta = 0.005$ m.}
+        \caption*{$\delta = 0.005$ m}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
+    \begin{subfigure}{0.48\textwidth}
+        \centering
         \includegraphics[width=\textwidth]{figures/fine/efield_map.png}
-        \caption{$\delta = 0.002$ m.}
+        \caption*{$\delta = 0.002$ m}
     \end{subfigure}
-    \caption{Electric field intensity and direction. [COMMENTO: al centro del 
-    condensatore il campo deve essere uniforme e verticale, con $|\mathbf{E}| \approx 
-    (V_1-V_2)/dy = 100$ V/m. Discutere la concentrazione di campo ai bordi delle 
-    piastre e come migliora con la mesh più fine.]}
-    \label{fig:efield_coarse}
-\end{figure}
 
-\begin{figure}[h!]
-    \centering
-    \begin{subfigure}[b]{0.48\textwidth}
+    \medskip
+
+    % --- Seconda riga ---
+    \begin{subfigure}{0.48\textwidth}
+        \centering
         \includegraphics[width=\textwidth]{figures/coarse/bad_elements.png}
-        \caption{$\delta = 0.005$ m.}
+        \caption*{$\delta = 0.005$ m}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
+    \begin{subfigure}{0.48\textwidth}
+        \centering
         \includegraphics[width=\textwidth]{figures/fine/bad_elements.png}
-        \caption{$\delta = 0.002$ m.}
+        \caption*{$\delta = 0.002$ m}
     \end{subfigure}
-    \caption{Elements with $|\mathbf{E}| > 50$ V/m highlighted in red. [COMMENTO: 
-    verificare che gli elementi anomali siano localizzati solo agli angoli delle piastre 
-    e che il loro numero non cresca con la raffinazione — se cresce indica un problema 
-    nel coupling, se rimane costante è la singolarità fisica attesa.]}
-    \label{fig:efield_fine}
-\end{figure}
+
+    \caption{%
+    Electric field intensity and direction (top row).
+    Elements with $|\mathbf{E}| > 105$~V/m ($>5\%$ of $|\mathbf{E}|$)highlighted in red (bottom row).
+    }
+    \label{fig:efield_comparison}
+\end{figure}\textbf{}
 
 % ------------------------------------------------------------------
-\textbf{Normal derivative on $\Gamma$.}
+\paragraph{Normal derivative on $\Gamma$.}
+Figures~\ref{fig:q_gamma} show the normal derivative $\partial u / \partial n$ on 
+$\Gamma$ for the two mesh levels. Recalling that $\partial u / \partial n = \mathbf{E} 
+\cdot \mathbf{n}$, this quantity represents the normal component of the electric field 
+on the artificial boundary, i.e. the flux per unit length leaving $\Omega_{\text{int}}$ 
+through $\Gamma$.
 
-\begin{figure}[h!]
+From a physical standpoint, the field lines connecting the two plates are contained 
+within $\Omega_{\text{int}}$ and do not cross $\Gamma$; only the fringing fields, which 
+curl around the plate edges and extend outward, contribute to the flux through $\Gamma$. 
+Consequently, $\partial u / \partial n$ is expected to be negligible on the lateral sides 
+of $\Gamma$, which are far from the plates, and to take small but non-zero values on the 
+top and bottom sides, in correspondence with the fringing field region above and below 
+the plates.
+
+A fundamental consistency check is provided by Gauss's law: since the two plates carry 
+equal and opposite charges, the total enclosed charge is zero and the net flux through 
+$\Gamma$ must vanish:
+\begin{equation}
+    \oint_{\Gamma} \frac{\partial u}{\partial n} \, ds = \sum_i q_i \approx 0.
+\end{equation}
+The numerical values obtained are $\sum_i q_i = -3.24 \times 10^{-13}$ for the coarse 
+mesh ($\delta = 0.005$ m) and $\sum_i q_i = -1.43 \times 10^{-12}$ for the fine mesh 
+($\delta = 0.002$ m). Both values are negligibly small in absolute terms, confirming 
+that the coupling condition is satisfied and the net flux is numerically consistent 
+with zero.
+\begin{figure}[h]
     \centering
-    \begin{subfigure}[b]{0.48\textwidth}
+
+    % --- Prima riga ---
+    \begin{subfigure}{0.48\textwidth}
+        \centering
         \includegraphics[width=\textwidth]{figures/coarse/q_gamma.png}
-        \caption{$\delta = 0.005$ m.}
+        \caption*{$\delta = 0.005$ m}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
+    \begin{subfigure}{0.48\textwidth}
+        \centering
         \includegraphics[width=\textwidth]{figures/fine/q_gamma.png}
-        \caption{$\delta = 0.002$ m.}
+        \caption*{$\delta = 0.002$ m}
     \end{subfigure}
-    \caption{Normal derivative $\partial u / \partial n$ on $\Gamma$. [COMMENTO: 
-    il flusso deve essere apprezzabile solo nella porzione di $\Gamma$ più vicina alle 
-    piastre e trascurabile altrove. La somma totale deve essere prossima a zero per 
-    la legge di Gauss — riportare il valore numerico di $\sum_i q_i$.]}
+
+    \medskip
+
+    % --- Seconda riga ---
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/coarse/q_gamma_ordered.png}
+        \caption*{$\delta = 0.005$ m}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/fine/q_gamma_ordered.png}
+        \caption*{$\delta = 0.002$ m}
+    \end{subfigure}
+
+    \caption{Normal derivative $\partial u / \partial n$ on $\Gamma$. 
+    Top row: coarse vs fine mesh. 
+    Bottom row: detailed view of $\partial u / \partial n$.}
+    \label{fig:q_gamma}
+\end{figure}
+\begin{figure}[!htbp]
+    \centering
+
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/coarse/q_gamma.png}
+        \caption*{$\delta = 0.005$ m}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/fine/q_gamma.png}
+        \caption*{$\delta = 0.002$ m}
+    \end{subfigure}
+
+    \caption{Normal derivative $\partial u / \partial n$ on $\Gamma$.}
     \label{fig:q_gamma}
 \end{figure}
 
 % ------------------------------------------------------------------
-\textbf{Surface charge density.}
-
-\begin{figure}[h!]
-    \centering
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{figures/coarse/charge_density.png}
-        \caption{$\delta = 0.005$ m.}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{figures/fine/charge_density.png}
-        \caption{$\delta = 0.002$ m.}
-    \end{subfigure}
-    \caption{Projected surface charge density on the plates. [COMMENTO: la 
+\textbf{Surface charge density.} [COMMENTO: la 
     distribuzione deve essere approssimativamente uniforme nella zona centrale e 
     crescere verso i bordi. Le due piastre devono avere distribuzioni di segno 
-    opposto e uguale integrale — verificare la carica totale su ciascuna piastra.]}
+    opposto e uguale integrale — verificare la carica totale su ciascuna piastra.]
+
+\begin{figure}[!htbp]
+    \centering
+
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/coarse/charge_density.png}
+        \caption*{$\delta = 0.005$ m}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/fine/charge_density.png}
+        \caption*{$\delta = 0.002$ m}
+    \end{subfigure}
+
+    \caption{Projected surface charge density on the plates.}
     \label{fig:charge_density}
 \end{figure}
 
-% ------------------------------------------------------------------
+
 \textbf{Capacitance}
 Table~\ref{tab:capacitance} summarizes the capacitance values obtained with the two 
 mesh levels.
@@ -829,25 +991,27 @@ Furthermore, artificial intelligence tools have been used in the preparation of 
 %% ------------------------------------------------------------
 
 \newpage
-\append{Introduzione Italiana}
+
+\begin{appendices}
+\section{Introduzione Italiana}
 
 Un classico esempio di accoppiamento FEM/BEM in un problema elettrostatico è il calcolo del campo elettrico generato da un condensatore a facce piane parallele. In una simulazione di questo tipo è spesso utile visualizzare non solo il comportamento del campo all’interno del condensatore, ma anche quello all’esterno. Nei corsi di Fisica 2, il campo esterno viene di norma assunto nullo; in realtà, a causa degli effetti di bordo, esso non è trascurabile e in alcune applicazioni può avere un ruolo rilevante. Questa è la motivazione principale per analizzare in maggiore dettaglio il comportamento del campo elettrico in un problema di questo tipo.
 
-In questo progetto considereremo il caso relativamente semplice di un condensatore a facce piane parallele (si veda la figura di riferimento). Oltre alle cariche presenti sulle armature, non saranno considerate altre sorgenti nello spazio. L’equazione differenziale da risolvere è la prima legge di Maxwell ~\eqref{eq:prima_legge_maxwell} nella sua forma elettrostatica semplificata ~\eqref{eq:prima_legge_maxwell_semplificata}, trattata esprimendo il campo elettrico come gradiente del potenziale. ~\eqref{eq:prima_legge_maxwell_semplificata_potenziale}
+In questo progetto considereremo il caso relativamente semplice di un condensatore a facce piane parallele (si veda la figura di riferimento). Oltre alle cariche presenti sulle armature, non saranno considerate altre sorgenti nello spazio. L’equazione differenziale da risolvere è la prima legge di Maxwell ~\eqref{eq:prima_legge_maxwell_A} nella sua forma elettrostatica semplificata ~\eqref{eq:prima_legge_maxwell_semplificata_A}, trattata esprimendo il campo elettrico come gradiente del potenziale. ~\eqref{eq:prima_legge_maxwell_semplificata_potenziale_A}
 
 \begin{equation}
 	\nabla \cdot D = \rho
-\label{eq:prima_legge_maxwell}
+\label{eq:prima_legge_maxwell_A}
 \end{equation}
 
 \begin{equation}
 	\nabla \cdot E = 0
-\label{eq:prima_legge_maxwell_semplificata}
+\label{eq:prima_legge_maxwell_semplificata_A}
 \end{equation}
 
 \begin{equation}
 	\Delta V = 0
-\label{eq:prima_legge_maxwell_semplificata_potenziale}
+\label{eq:prima_legge_maxwell_semplificata_potenziale_A}
 \end{equation}
 
 Un primo approccio ben noto consiste nell’utilizzare il metodo degli elementi finiti (FEM). Si definisce un dominio sufficientemente ampio da contenere il condensatore e si impone sul bordo un potenziale nullo, assumendo che a distanza sufficientemente grande il potenziale tenda effettivamente a zero. Questo metodo presenta tuttavia alcuni svantaggi: richiede domini molto estesi e quindi mesh di grandi dimensioni, con conseguente aumento dei tempi di calcolo. Inoltre la finezza della mesh deve essere omogenea dentro e fuori dal condensatore, anche se la qualità richiesta per ottenere un buon risultato non è la stessa nelle due regioni. Calcolare il campo esterno tramite FEM porta quindi a un significativo spreco computazionale e, in ogni caso, il potenziale non può essere rappresentato fino all’infinito, introducendo un’inevitabile approssimazione.
@@ -855,5 +1019,7 @@ Un primo approccio ben noto consiste nell’utilizzare il metodo degli elementi 
 Il metodo BEM, invece, offre una soluzione più efficiente al problema. Riducendo di un ordine la dimensione del dominio, permette di ottenere notevoli vantaggi in termini computazionali. Per sua natura il BEM consente di calcolare con precisione la variabile incognita in qualsiasi punto interno a un dominio, risolvendo il problema solo sul suo bordo. (fig) Il BEM risulta applicabile anche a domini molto estesi o non limitati (fig.), a patto di conoscere a priori l’andamento asintotico del potenziale e che esso converga come $1/r^2$. In tali casi, il BEM riesce a rappresentare correttamente il comportamento all’infinito senza introdurre approssimazioni artificiali.
 
 Lo scopo di questo lavoro è quindi combinare FEM e BEM per ottenere risultati più accurati a costi computazionali inferiori. L’idea è sfruttare il FEM per determinare con precisione la soluzione all’interno del condensatore e utilizzare il BEM per estenderla verso l’esterno fino all’infinito in modo esatto. Il meccanismo di accoppiamento tra i due metodi sarà descritto in dettaglio nella sezione dedicata.
+
+\end{appendices}
 
 \end{document}
