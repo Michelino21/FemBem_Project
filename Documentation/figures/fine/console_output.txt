@@ -8,3 +8,14 @@ Elementi con E <= soglia: 488
 C (FEM region) = 114.2539 pF/m
 C (inside) = 88.5716 pF/m
 C (NO bad el) = 86.0078 pF/m
+Nelement = 5600
+Nnode = 2916
+E_teorico = 100 V/m
+Fattore Soglia = 5%
+E_soglia    = 105 V/m
+Elementi con E > soglia: 12
+Elementi con E <= soglia: 488
+C (FEM region) = 114.2539 pF/m
+C (inside) = 88.5716 pF/m
+C (NO bad el) = 86.0078 pF/m
+Flux of E on Gamma = -1.4295e-12 V*m

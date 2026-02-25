@@ -3,27 +3,31 @@
 clear all; close all; clc;
 addpath(genpath('src'));
 
+SALVATAGGIO = 1;
+
 %% SALVATAGGI
+if(SALVATAGGIO == 1)
 
-% Scegli il nome della cartella
-folder_name = './Documentation/figures/coarse';  % cambia qui per ogni run
+    % Scegli il nome della cartella
+    folder_name = './Documentation/figures/fine';  % cambia qui per ogni run
+    
+    % Crea la cartella se non esiste
+    if ~exist(folder_name, 'dir')
+        mkdir(folder_name);
+    end
+    
+    % Nome del file di log
+    log_file = fullfile(folder_name, 'console_output.txt');
+    
+    % Attiva il salvataggio della console
+    diary(log_file)
+    diary on
 
-% Crea la cartella se non esiste
-if ~exist(folder_name, 'dir')
-    mkdir(folder_name);
 end
-
-% Nome del file di log
-log_file = fullfile(folder_name, 'console_output.txt');
-
-% Attiva il salvataggio della console
-diary(log_file)
-diary on
-
 %% === PROBLEM PARAMETERS ===
 dx   = 0.10;          % lunghezza piastre
 dy   = 0.01;          % separazione piastre  →  rapporto dx/dy = 10
-delx = 0.005;         % passo mesh (20 elementi lungo dx, 2 lungo dy)
+delx = 0.002;         % passo mesh (20 elementi lungo dx, 2 lungo dy)
 dely = delx;
 
 margine = 3 * dy;     % = 0.03 m per lato
@@ -205,6 +209,50 @@ ylabel('\partial u / \partial n');
 title('Derivata normale su \Gamma (uscente da \Omega_{int})');
 grid on
 
+
+% Riordina q_FEM nell'ordine geometrico di B_ordered
+q_ordered = q_FEM(perm);
+
+figure('Color','w');
+hold on
+axis equal tight
+
+% Plotta i segmenti di Gamma colorati per valore di q
+n = length(B_ordered);
+for k = 1:n
+    n1 = k;
+    n2 = mod(k, n) + 1;
+    x1 = x(B_ordered(n1)); y1 = y(B_ordered(n1));
+    x2 = x(B_ordered(n2)); y2 = y(B_ordered(n2));
+    q_mid = 0.5*(q_ordered(n1) + q_ordered(n2));
+    plot([x1 x2], [y1 y2], 'Color', ...
+        interp1([-max(abs(q_ordered)) 0 max(abs(q_ordered))], ...
+                [0 0 1; 1 1 1; 1 0 0], q_mid), ...
+        'LineWidth', 4);
+end
+
+n = 256;
+blue  = [0 0 1];
+white = [1 1 1];
+red   = [1 0 0];
+
+cmap = [ ...
+    linspace(blue(1),white(1),n/2)' ...
+    linspace(blue(2),white(2),n/2)' ...
+    linspace(blue(3),white(3),n/2)'; ...
+    linspace(white(1),red(1),n/2)' ...
+    linspace(white(2),red(2),n/2)' ...
+    linspace(white(3),red(3),n/2)' ];
+
+colormap(cmap)
+cb = colorbar;
+clim([-max(abs(q_ordered)) max(abs(q_ordered))]);
+ylabel(cb, '\partial u / \partial n')
+plot(x(ptop_node),    y(ptop_node),    'k', 'LineWidth', 4)
+plot(x(pbottom_node), y(pbottom_node), 'k', 'LineWidth', 4)
+xlabel('x (m)'); ylabel('y (m)')
+title('\partial u / \partial n on \Gamma , E \cdot n , n positive going outside')
+
 % --- Plot densità di carica sulle piastre ---
 figure, clf
 hold on
@@ -263,19 +311,29 @@ C_clean = (1/(V1-V2)^2) * sum(eps_e(good_elm) .* ...
           (Ex(good_elm).^2 + Ey(good_elm).^2) .* area(good_elm));
 disp(['C (NO bad el) = ' num2str(C_clean*1e12) ' pF/m'])
 
+% --- Flusso di E
+fluxE = sum(q_FEM);
+disp(['Flux of E on Gamma = ' num2str(fluxE) ' V*m'])
 
 %% SALVATAGGI
+if(SALVATAGGIO == 1)
 
-% Fine del logging
-diary off
+    % Fine del logging
+    diary off
 
-% Salva tutte le figure
-saveas(figure(1), fullfile(folder_name, 'mesh.png'));
-saveas(figure(2), fullfile(folder_name, 'element_quality.png'));
-saveas(figure(3), fullfile(folder_name, 'potential_map.png'));
-saveas(figure(4), fullfile(folder_name, 'potential_contour.png'));
-saveas(figure(5), fullfile(folder_name, 'efield_map.png'));
-saveas(figure(6), fullfile(folder_name, 'q_gamma.png'));
-saveas(figure(7), fullfile(folder_name, 'charge_density.png'));
-saveas(figure(8), fullfile(folder_name, 'E_histogram.png'));
-saveas(figure(9), fullfile(folder_name, 'bad_elements.png'));
+
+    % Salva tutte le figure
+    saveas(figure(1), fullfile(folder_name, 'mesh.png'));
+    saveas(figure(2), fullfile(folder_name, 'element_quality.png'));
+    saveas(figure(3), fullfile(folder_name, 'potential_map.png'));
+    saveas(figure(4), fullfile(folder_name, 'potential_contour.png'));
+    saveas(figure(5), fullfile(folder_name, 'efield_map.png'));
+    saveas(figure(6), fullfile(folder_name, 'q_gamma.png'));
+    saveas(figure(7), fullfile(folder_name, 'q_gamma_ordered.png'));
+    saveas(figure(8), fullfile(folder_name, 'charge_density.png'));
+    saveas(figure(9), fullfile(folder_name, 'E_histogram.png'));
+    saveas(figure(10), fullfile(folder_name, 'bad_elements.png'));
+end
+
+
+
