@@ -1,0 +1,57 @@
+------- ERRORI -------
+Mesh Info
+Nelement = 896
+Nnode = 495
+--- k_fem: 1---
+Mesh Info
+Nelement = 896
+Nnode = 495
+Margine = 3*dy  |  N = 495  |  t = 0.16166 s  |  err_L2 = 0.59533  |  err_C = 0.054371%
+--- k_fem: 2---
+Mesh Info
+Nelement = 1760
+Nnode = 943
+Margine = 5*dy  |  N = 943  |  t = 0.16362 s  |  err_L2 = 0.453  |  err_C = 0.031672%
+--- k_fem: 3---
+Mesh Info
+Nelement = 5040
+Nnode = 2623
+Margine = 10*dy  |  N = 2623  |  t = 0.20821 s  |  err_L2 = 0.36899  |  err_C = 0.015815%
+--- k_fem: 4---
+Mesh Info
+Nelement = 16400
+Nnode = 8383
+Margine = 20*dy  |  N = 8383  |  t = 0.48353 s  |  err_L2 = 0.33026  |  err_C = 0.0084748%
+--- k_fem: 5---
+Mesh Info
+Nelement = 34160
+Nnode = 17343
+Margine = 30*dy  |  N = 17343  |  t = 1.2076 s  |  err_L2 = 0.316  |  err_C = 0.0061601%
+--- k_fem: 6---
+Mesh Info
+Nelement = 58320
+Nnode = 29503
+Margine = 40*dy  |  N = 29503  |  t = 2.8565 s  |  err_L2 = 0.30817  |  err_C = 0.0050146%
+--- k_fem: 7---
+Mesh Info
+Nelement = 88880
+Nnode = 44863
+Margine = 50*dy  |  N = 44863  |  t = 5.8381 s  |  err_L2 = 0.30311  |  err_C = 0.0043218%
+--- k_fem: 8---
+Mesh Info
+Nelement = 337680
+Nnode = 169663
+Margine = 100*dy  |  N = 169663  |  t = 76.5675 s  |  err_L2 = 0.29156  |  err_C = 0.0028695%
+
+Margin/dy       N nodes    err_L2       err_C (%)    time (s)  
+---------       -------    ------       ---------    --------  
+3               495        5.95e-01     0.05         0.162     
+5               943        4.53e-01     0.03         0.164     
+10              2623       3.69e-01     0.02         0.208     
+20              8383       3.30e-01     0.01         0.484     
+30              17343      3.16e-01     0.01         1.208     
+40              29503      3.08e-01     0.01         2.857     
+50              44863      3.03e-01     0.00         5.838     
+100             169663     2.92e-01     0.00         76.567    
+FEM-BEM(ref)    495        --           --           1.486     
+

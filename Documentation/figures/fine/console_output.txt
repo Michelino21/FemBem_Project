@@ -19,3 +19,58 @@ C (FEM region) = 114.2539 pF/m
 C (inside) = 88.5716 pF/m
 C (NO bad el) = 86.0078 pF/m
 Flux of E on Gamma = -1.4295e-12 V*m
+Nelement = 5600
+Nnode = 2916
+{Unrecognized function or variable 'fprint'.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('FEM_BEM', '/Users/matteo/Documents/AAA Doc Teo/Polimi/Magistrale/COMPUTATIONAL ELECTROMAGNETICS/PROJECT FEM_BEM COUPLING/FEM_BEM.m', 275)" style="font-weight:bold">FEM_BEM</a> (<a href="matlab: opentoline('/Users/matteo/Documents/AAA Doc Teo/Polimi/Magistrale/COMPUTATIONAL ELECTROMAGNETICS/PROJECT FEM_BEM COUPLING/FEM_BEM.m',275,0)">line 275</a>)
+fprint("------- E Field -------")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+} 
+help printf
+--- <strong>printf</strong> not found. Showing related topics. ---
+
+<a href="matlab:help fprintf -displayBanner">fprintf</a>                        - Write data to text file
+<a href="matlab:help string.sprintf -displayBanner">string.sprintf</a>                 - Format data into string or character vector
+<a href="matlab:help('mexPrintf (C and Fortran)', '-displayBanner')">mexPrintf (C and Fortran)</a>      - ANSI C <strong>PRINTF</strong>-style output routine
+<a href="matlab:help('fprintf (serial)', '-displayBanner')">fprintf (serial)</a>               - (To be removed) Write text to device
+
+    <a href="matlab:docsearch printf">Search the documentation for printf</a>
+
+FEM_BEM
+Nelement = 5600
+Nnode = 2916
+------- E Field -------
+E_teorico = 100 V/m
+Fattore Soglia = 5%
+E_soglia    = 105 V/m
+Elementi con E > soglia: 12
+Elementi con E <= soglia: 488
+Flux of E on Gamma = -1.4295e-12 V*m
+------- Capacitanza -------
+C (FEM region) = 114.2539 pF/m
+C (inside) = 88.5716 pF/m
+C (NO bad el) = 86.0078 pF/m
+------- Carica Piastre -------
+Q piastra superiore = 1.0112e-21 C/m
+Q piastra inferiore = -1.0111e-21 C/m
+Somma Q_top + Q_bot = 3.5537e-26 C/m  (deve essere ~0)
+Rapporto Q_top/Q_bot = -1  (deve essere ~-1)
+Nelement = 5600
+Nnode = 2916
+------- E Field -------
+E_teorico = 100 V/m
+Fattore Soglia = 5%
+E_soglia    = 105 V/m
+Elementi con E > soglia: 12
+Elementi con E <= soglia: 488
+Flux of E on Gamma = -1.4295e-12 V*m
+------- Capacitanza -------
+C (FEM region) = 114.2539 pF/m
+C (inside) = 88.5716 pF/m
+C (NO bad el) = 86.0078 pF/m
+------- Carica Piastre -------
+Q piastra superiore = 1.1426e-10 C/m
+Q piastra inferiore = -1.1425e-10 C/m
+Somma Q_top + Q_bot = 4.0155e-15 C/m  (deve essere ~0)
+Rapporto Q_top/Q_bot = -1  (deve essere ~-1)

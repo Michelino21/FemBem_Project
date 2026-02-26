@@ -3,7 +3,7 @@
 clear all; close all; clc;
 addpath(genpath('src'));
 
-SALVATAGGIO = 1;
+SALVATAGGIO = 0;
 
 %% SALVATAGGI
 if(SALVATAGGIO == 1)
@@ -18,6 +18,11 @@ if(SALVATAGGIO == 1)
     
     % Nome del file di log
     log_file = fullfile(folder_name, 'console_output.txt');
+
+    % se esiste, cancellalo
+    if exist(log_file, 'file')
+        delete(log_file);
+    end
     
     % Attiva il salvataggio della console
     diary(log_file)
@@ -42,6 +47,8 @@ V2  = 0;   % potenziale piastra inferiore
 %% === SOLVER PARAMETERS ===
 elm_type = 1; % 1: triangular, 2: quadrilateral %% Only triangular
 
+%% AVVIO TIMER
+tic
 %% === MESH ===
 if elm_type == 1  % triangular
     [conn, x, y, xmid, ymid, outb_node, ptop_node, pbottom_node, d_elm] = ...
@@ -130,6 +137,10 @@ u = zeros(N, 1);
 u(F_nodes) = u_F;
 u(B_nodes) = u_B;
 u(D_nodes) = u_D;
+
+%% STOP TIMER
+t_FEM_BEM = toc;
+disp(['FEM-BEM time: ' num2str(t_FEM_BEM) ' s'])
 
 %% === DERIVATA NORMALE SU GAMMA (per post-processing e soluzione esterna) ===
 % Segno più perché q_FEM = q_BEM
@@ -272,6 +283,7 @@ xlabel('|E| (V/m)'); ylabel('Conteggio elementi');
 title('Distribuzione campo elettrico in d\_elm')
 
 % Trova gli elementi problematici
+disp("------- E Field -------")
 E_teorico = (V1 - V2) / dy;
 fattore_soglia = 5; % in percentuale
 soglia = (1 + fattore_soglia/100) * E_teorico;
@@ -283,6 +295,10 @@ disp(['Fattore Soglia = ' num2str(fattore_soglia) '%'])
 disp(['E_soglia    = ' num2str(soglia)    ' V/m'])
 disp(['Elementi con E > soglia: ' num2str(length(bad_elm))])
 disp(['Elementi con E <= soglia: ' num2str(length(good_elm))])
+
+% --- Flusso di E
+fluxE = sum(q_FEM);
+disp(['Flux of E on Gamma = ' num2str(fluxE) ' V*m'])
 
 
 % Visualizza dove sono i bad elements
@@ -298,6 +314,7 @@ title('Elementi con E anomalo (rosso)')
 
 
 % --- Capacitanza ---
+disp("------- Capacitanza -------")
 % Totale (dominio FEM)
 C = (1/(V1-V2)^2) * sum(eps_e .* (Ex.^2 + Ey.^2) .* area);
 disp(['C (FEM region) = ' num2str(C*1e12) ' pF/m'])
@@ -311,9 +328,16 @@ C_clean = (1/(V1-V2)^2) * sum(eps_e(good_elm) .* ...
           (Ex(good_elm).^2 + Ey(good_elm).^2) .* area(good_elm));
 disp(['C (NO bad el) = ' num2str(C_clean*1e12) ' pF/m'])
 
-% --- Flusso di E
-fluxE = sum(q_FEM);
-disp(['Flux of E on Gamma = ' num2str(fluxE) ' V*m'])
+% --- Carica Totale ---
+disp("------- Carica Piastre -------")
+n_top = length(ptop_node);
+Q_top = sum(charge_projection(1:n_top));
+Q_bot = sum(charge_projection(n_top+1:end));
+
+disp(['Q piastra superiore = ' num2str(Q_top) ' C/m'])
+disp(['Q piastra inferiore = ' num2str(Q_bot) ' C/m'])
+disp(['Somma Q_top + Q_bot = ' num2str(Q_top + Q_bot) ' C/m  (deve essere ~0)'])
+disp(['Rapporto Q_top/Q_bot = ' num2str(Q_top/Q_bot) '  (deve essere ~-1)'])
 
 %% SALVATAGGI
 if(SALVATAGGIO == 1)
@@ -323,17 +347,18 @@ if(SALVATAGGIO == 1)
 
 
     % Salva tutte le figure
-    saveas(figure(1), fullfile(folder_name, 'mesh.png'));
-    saveas(figure(2), fullfile(folder_name, 'element_quality.png'));
-    saveas(figure(3), fullfile(folder_name, 'potential_map.png'));
-    saveas(figure(4), fullfile(folder_name, 'potential_contour.png'));
-    saveas(figure(5), fullfile(folder_name, 'efield_map.png'));
-    saveas(figure(6), fullfile(folder_name, 'q_gamma.png'));
-    saveas(figure(7), fullfile(folder_name, 'q_gamma_ordered.png'));
-    saveas(figure(8), fullfile(folder_name, 'charge_density.png'));
-    saveas(figure(9), fullfile(folder_name, 'E_histogram.png'));
-    saveas(figure(10), fullfile(folder_name, 'bad_elements.png'));
+    %saveas(figure(1), fullfile(folder_name, 'mesh.png'));
+    %saveas(figure(2), fullfile(folder_name, 'element_quality.png'));
+    saveas(figure(1), fullfile(folder_name, 'potential_map.png'));
+    saveas(figure(2), fullfile(folder_name, 'potential_contour.png'));
+    saveas(figure(3), fullfile(folder_name, 'efield_map.png'));
+    saveas(figure(4), fullfile(folder_name, 'q_gamma.png'));
+    saveas(figure(5), fullfile(folder_name, 'q_gamma_ordered.png'));
+    saveas(figure(6), fullfile(folder_name, 'charge_density.png'));
+    saveas(figure(7), fullfile(folder_name, 'E_histogram.png'));
+    saveas(figure(8), fullfile(folder_name, 'bad_elements.png'));
 end
 
 
 
+error_FEM(dx,dy,delx,dely,e0,er,V1,V2,u,t_FEM_BEM);

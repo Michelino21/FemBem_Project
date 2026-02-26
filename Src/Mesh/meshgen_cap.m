@@ -69,6 +69,7 @@ conn = delaunay(x, y);
 
 N = length(x);
 M = size(conn,1);
+disp("Mesh Info");
 disp(['Nelement = ' sprintf('%d', M)]);
 disp(['Nnode = ' sprintf('%d', N)]);
 
@@ -95,7 +96,7 @@ d_elm = find((ymid < dy/2) & (ymid > -dy/2) & (xmid > -dx/2) & (xmid < dx/2));
 % *************************************************************************
 % Plot results
 % *************************************************************************
-plot_flag = 1; % flag showing whether the mesh will be plotted or not
+plot_flag = 0; % flag showing whether the mesh will be plotted or not
 if plot_flag
     figure; hold on
     triplot(conn, x, y)
