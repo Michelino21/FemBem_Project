@@ -9,7 +9,7 @@ SALVATAGGIO = 1;
 if(SALVATAGGIO == 1)
 
     % Scegli il nome della cartella
-    folder_name = './Documentation/figures/coarse';  % cambia qui per ogni run
+    folder_name = './Documentation/figures/fine';  % cambia qui per ogni run
     
     % Crea la cartella se non esiste
     if ~exist(folder_name, 'dir')
@@ -32,7 +32,7 @@ end
 %% === PROBLEM PARAMETERS ===
 dx   = 0.10;          % lunghezza piastre
 dy   = 0.01;          % separazione piastre  →  rapporto dx/dy = 10
-delx = 0.005;         % passo mesh (20 elementi lungo dx, 2 lungo dy)
+delx = 0.002;         % passo mesh (20 elementi lungo dx, 2 lungo dy)
 dely = delx;
 
 margine = 3 * dy;     % = 0.03 m per lato
