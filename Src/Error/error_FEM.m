@@ -11,7 +11,7 @@ function [] = error_FEM(dx,dy,delx,dely,e0,er,V1,V2,u_FEM_BEM,t_FEM_BEM)
     [C_ref, ~] = compute_capacitance(conn_r, x_r, y_r, d_elm_r, e0, er, u_FEM_BEM, V1, V2);
     
     
-    margini = [3, 5, 10, 20, 40, 80] * dy;
+    margini = [3, 5, 10, 20, 40] * dy;
     n_test  = length(margini);
     
     err_L2  = zeros(n_test, 1);

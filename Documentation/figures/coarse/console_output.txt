@@ -1,7 +1,7 @@
 Mesh Info
 Nelement = 896
 Nnode = 495
-FEM-BEM time: 1.1444 s
+FEM-BEM time: 1.1285 s
 ------- E Field -------
 E_teorico = 100 V/m
 Fattore Soglia = 5%
@@ -42,17 +42,12 @@ Nnode = 8383
 Mesh Info
 Nelement = 58320
 Nnode = 29503
---- k_fem: 6 , margin:  ---
-Mesh Info
-Nelement = 218960
-Nnode = 110143
 
 Margin/dy       N nodes    err_L2 (%)   time (s)  
 ---------       -------    ------       --------  
-3               495        5.95e-01     0.040     
-5               943        4.53e-01     0.026     
-10              2623       3.69e-01     0.067     
-20              8383       3.30e-01     0.328     
-40              29503      3.08e-01     2.618     
-80              110143     2.95e-01     31.361    
-FEM-BEM(ref)    495        --           1.144     
+3               495        5.95e-01     0.042     
+5               943        4.53e-01     0.024     
+10              2623       3.69e-01     0.068     
+20              8383       3.30e-01     0.334     
+40              29503      3.08e-01     2.709     
+FEM-BEM(ref)    495        --           1.128     
