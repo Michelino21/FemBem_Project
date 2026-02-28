@@ -866,13 +866,13 @@ with zero.
     \centering
 
     % --- Prima riga ---
-    \begin{subfigure}{0.48\textwidth}
+    \begin{subfigure}{0.40\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/coarse/q_gamma.png}
         \caption*{$\delta = 0.005$ m}
     \end{subfigure}
     \hfill
-    \begin{subfigure}{0.48\textwidth}
+    \begin{subfigure}{0.40\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/fine/q_gamma.png}
         \caption*{$\delta = 0.002$ m}
@@ -894,34 +894,54 @@ with zero.
     \end{subfigure}
 
     \caption{Normal derivative $\partial u / \partial n$ on $\Gamma$. 
-    Top row: coarse vs fine mesh. 
-    Bottom row: detailed view of $\partial u / \partial n$.}
-    \label{fig:q_gamma}
-\end{figure}
-\begin{figure}[!htbp]
-    \centering
-
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/coarse/q_gamma.png}
-        \caption*{$\delta = 0.005$ m}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/fine/q_gamma.png}
-        \caption*{$\delta = 0.002$ m}
-    \end{subfigure}
-
-    \caption{Normal derivative $\partial u / \partial n$ on $\Gamma$.}
+    Top row: numerical value, FEM ordered. 
+    Bottom row: visual view BEM ordered}
     \label{fig:q_gamma}
 \end{figure}
 
 % ------------------------------------------------------------------
-\textbf{Surface charge density.} [COMMENTO: la 
-    distribuzione deve essere approssimativamente uniforme nella zona centrale e 
-    crescere verso i bordi. Le due piastre devono avere distribuzioni di segno 
-    opposto e uguale integrale — verificare la carica totale su ciascuna piastra.]
+\paragraph{Surface charge density.}
+Figures~\ref{fig:charge_density} show the projected surface charge density on the two 
+plates for both mesh levels. In both cases the distribution is approximately uniform in 
+the central region of the plates and increases toward the edges, consistent with the 
+well-known behaviour of a finite parallel-plate capacitor where field concentration at 
+the tips produces a higher local charge density.
+
+The two plates carry distributions of opposite sign, as required by the problem setup. 
+The total charge per unit length on each plate is recovered by exploiting the partition 
+of unity property of the FEM basis functions, which gives:
+\begin{equation}
+    Q = \sum_i \left( S_{DF}\, u_F + S_{DD}\, u_D + S_{DB}\, u_B \right)_i,
+\end{equation}
+where the sum runs over the nodes of the plate. The numerical values are reported in 
+Table~\ref{tab:charge}. 
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{lccc}
+        \hline
+        Mesh & $Q_{\text{top}}$ (C/m) & $Q_{\text{bot}}$ (C/m) & 
+        $Q_{\text{top}} + Q_{\text{bot}}$ (C/m) \\
+        \hline
+        Coarse ($\delta = 0.005$ m) & $1.1687 \times 10^{-10}$ & $-1.1687 \times 10^{-10}$ & $\sim 0$ \\
+        Fine ($\delta = 0.002$ m)   & $1.1426 \times 10^{-10}$ & $-1.1425 \times 10^{-10}$ & $\sim 0$ \\
+        \hline
+    \end{tabular}
+    \caption{Total charge per unit length on each plate. The near-perfect cancellation 
+    $Q_{\text{top}} + Q_{\text{bot}} \approx 0$ confirms global charge neutrality and 
+    the consistency of the coupled solution.}
+    \label{tab:charge}
+\end{table}
+
+In both cases the charges on the two plates are equal and opposite to within numerical 
+precision, confirming global charge neutrality. The fine mesh yields a slightly lower 
+value of $|Q|$, which is consistent with the improved resolution of the potential 
+gradient near the plate edges: the coarse mesh overestimates the local field intensity 
+in those regions, leading to a small overestimate of the total charge. The reference 
+value from the capacitance formula is $Q = C_{\text{ideal}} \cdot (V_1 - V_2) = 
+88.5 \times 10^{-12}$ C/m; the numerical values exceed this by approximately 29\%, 
+which is attributable to the fringing field contribution that is not captured by the 
+ideal formula but is fully resolved by the coupled FEM-BEM model.
 
 \begin{figure}[!htbp]
     \centering
@@ -945,31 +965,110 @@ with zero.
 
 \textbf{Capacitance}
 Table~\ref{tab:capacitance} summarizes the capacitance values obtained with the two 
-mesh levels.
+mesh levels. $C_{\text{full}}$ 
+    includes all elements; $C_{\text{clean}}$ excludes elements with 
+    $|\mathbf{E}| > 105$ V/m near the plate edges. [COMMENTO: discutere la 
+    convergenza tra le due mesh e il gap residuo rispetto al valore ideale, 
+    attribuendolo ai campi di frangia.]
 
 \begin{table}[h!]
     \centering
-    \begin{tabular}{lcccc}
+    \begin{tabular}{lccccc}
         \hline
         Mesh & $\delta$ (m) & $C_{\text{full}}$ (pF/m) & 
+        $C_{\text{inside}}$ (pF/m) & 
         $C_{\text{clean}}$ (pF/m) & Error w.r.t. $C_{\text{ideal}}$ \\
         \hline
-        Coarse & 0.005 & [VAL] & [VAL] & [VAL]\% \\
-        Fine   & 0.002 & [VAL] & [VAL] & [VAL]\% \\
+        Coarse & 0.005 & 116.8737 & 88.5 &  88.5 & 32\% \\
+        Fine   & 0.002 & 114.2539 & 88.5716 & 86.0078 & 29\% \\
         \hline
-        Ideal  & --    & 88.5  & 88.5  & -- \\
+        Ideal  & --    & 88.5  & 88.5 & 88.5  & -- \\
         \hline
     \end{tabular}
-    \caption{Capacitance per unit length for the two mesh levels. $C_{\text{full}}$ 
-    includes all elements; $C_{\text{clean}}$ excludes elements with 
-    $|\mathbf{E}| > 50$ V/m near the plate edges. [COMMENTO: discutere la 
-    convergenza tra le due mesh e il gap residuo rispetto al valore ideale, 
-    attribuendolo ai campi di frangia.]}
+    \caption{Capacitance per unit length for the two mesh levels. }
     \label{tab:capacitance}
 \end{table}
 
 
 %% ------------------------------------------------------------
+\subsection{Comparison with Pure FEM}
+
+The coupled FEM--BEM formulation is designed to handle the unbounded exterior domain exactly, without introducing artificial truncation conditions. To assess the practical advantage of this approach, we compare the coupled solution against a pure FEM solver applied to the same problem on a truncated domain. In the pure FEM setting, the artificial boundary $\Gamma$ is treated as a Dirichlet boundary with $u = 0$, which is an approximation that becomes more accurate as $\Gamma$ is moved farther from the plates.
+
+Two aspects are investigated: the accuracy of the pure FEM solution as a function of the domain size, and the computational cost. The goal is twofold: first, to verify that the FEM--BEM method is functioning correctly by comparing it against a well-resolved pure FEM solution (which serves as a benchmark when computed on a sufficiently large domain); second, to determine whether the coupled approach offers a meaningful advantage in terms of accuracy and computational efficiency.
+
+\textbf{Accuracy as a function of domain size.}
+The margin between the capacitor plates and the artificial boundary $\Gamma$ is varied as $3\,dy$, $5\,dy$, $10\,dy$, $20\,dy$, $40\,dy$ and $80\,dy$ where $dy$ is the vertical spacing between the plates. The mesh step $\delta$ is kept fixed at two values: $\delta = 0.002$ and $\delta = 0.005$. For each configuration, the $L^2$ error on the potential is computed. The FEM--BEM solution is computed on a fixed small domain with margin $3\,dy$ and serves as the reference solution.
+
+The $L^2$ error between the pure FEM solution and the FEM--BEM reference is computed on the nodes belonging to the interior region $\Omega_{\text{int}}$ common to both discretizations as:
+\begin{equation}
+    \varepsilon_{L^2} =
+    \sqrt{
+    \frac{\sum_{i \in \mathcal{N}_c}
+    \left( u^{\text{FEM}}_i - u^{\text{FEM--BEM}}_i \right)^2}
+    {\sum_{i \in \mathcal{N}_c}
+    \left( u^{\text{FEM--BEM}}_i \right)^2}
+    }
+    \times 100\%,
+\end{equation}
+where $\mathcal{N}_c$ denotes the set of nodes in the common region, $u^{\text{FEM}}_i$ is the pure FEM solution, and $u^{\text{FEM--BEM}}_i$ is the coupled solution interpolated at the same locations. The error is expressed as a percentage.
+
+\textbf{Computational cost.}
+The wall-clock time of each simulation is measured for both the pure FEM and FEM--BEM approaches. This allows us to assess the trade-off between domain size, accuracy, and computational effort. In principle, the FEM--BEM method should achieve a given accuracy at lower cost, since it does not require enlarging the domain to reduce truncation error.
+
+\textbf{Results.}
+The $L^2$ errors and execution times for both mesh resolutions ($\delta = 0.002$ and $\delta = 0.005$) are shown in Figures~\ref{fig:l2_error_comparison} and~\ref{fig:time_comparison}.
+
+\begin{figure}[h]
+    \centering
+
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{l2_error_vs_margin_delta_0005.png}
+        \caption*{$\delta = 0.005$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{l2_norm.png}
+        \caption*{$\delta = 0.002$}
+    \end{subfigure}
+
+    \caption{$L^2$ error (in percentage) between pure FEM and FEM--BEM solutions as a function of domain margin.}
+    \label{fig:l2_error_comparison}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{time_vs_margin_delta_0005.png}
+        \caption*{$\delta = 0.005$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{time_vs_margin_delta_0002.png}
+        \caption*{$\delta = 0.002$}
+    \end{subfigure}
+
+    \caption{Wall-clock execution time as a function of domain margin, for pure FEM and FEM--BEM.}
+    \label{fig:time_comparison}
+\end{figure}
+
+The results reveal some unexpected features. The $L^2$ error between the FEM--BEM solution and the pure FEM solution remains relatively high across all tested domain sizes, with values around $30\%$ even when the pure FEM domain is significantly enlarged. This is substantially higher than anticipated and raises questions about whether the coupled method is converging to the correct solution, or whether there are implementation issues that need to be addressed.
+
+Regarding computational cost, the FEM--BEM approach does show promising execution times compared to pure FEM on larger domains. However, given that the $L^2$ error does not decrease toward zero as the pure FEM domain is enlarged, a direct comparison of execution times is of limited value. Without a clear convergence of the pure FEM solution to the FEM--BEM reference (or vice versa), it is difficult to establish a meaningful benchmark that would demonstrate the true computational advantage of the coupled method.
+
+\textbf{Discussion.}
+These preliminary results suggest that further investigation is needed. The persistent $L^2$ error of approximately $30\%$ indicates either:
+(i) a fundamental discrepancy between the two methods that requires deeper theoretical analysis,
+(ii) numerical issues in the implementation of the FEM--BEM coupling (such as inaccuracies in the BEM matrix assembly, quadrature errors, or incorrect handling of boundary conditions),
+(iii) an inappropriately chosen reference solution or (iv) a more mesh more fine with $\delta<0.002$.
+
+In the following section, we will examine potential sources of this error and discuss whether the observed behavior is physically reasonable or points to a need for methodological refinement. For now, we report these results as-is and acknowledge the need for further validation before drawing definitive conclusions about the effectiveness of the FEM--BEM coupling for this problem.
+
 
 %% ------------------------------------------------------------
 \section{Conclusions}
