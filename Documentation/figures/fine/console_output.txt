@@ -1,0 +1,58 @@
+Mesh Info
+Nelement = 5600
+Nnode = 2916
+FEM-BEM time: 5.6132 s
+------- E Field -------
+E_teorico = 100 V/m
+Fattore Soglia = 5%
+E_soglia    = 105 V/m
+Elementi con E > soglia: 12
+Elementi con E <= soglia: 488
+Flux of E on Gamma = -1.4295e-12 V*m
+------- Capacitanza -------
+C (FEM region) = 114.2539 pF/m
+C (inside) = 88.5716 pF/m
+C (NO bad el) = 86.0078 pF/m
+------- Carica Piastre -------
+Q piastra superiore = 1.1426e-10 C/m
+Q piastra inferiore = -1.1425e-10 C/m
+Somma Q_top + Q_bot = 4.0155e-15 C/m  (deve essere ~0)
+Rapporto Q_top/Q_bot = -1  (deve essere ~-1)
+------- ERRORI -------
+Mesh Info
+Nelement = 5600
+Nnode = 2916
+--- k_fem: 1 , margin:  ---
+Mesh Info
+Nelement = 5600
+Nnode = 2916
+--- k_fem: 2 , margin:  ---
+Mesh Info
+Nelement = 11000
+Nnode = 5656
+--- k_fem: 3 , margin:  ---
+Mesh Info
+Nelement = 31500
+Nnode = 16006
+--- k_fem: 4 , margin:  ---
+Mesh Info
+Nelement = 102500
+Nnode = 51706
+--- k_fem: 5 , margin:  ---
+Mesh Info
+Nelement = 364500
+Nnode = 183106
+--- k_fem: 6 , margin:  ---
+Mesh Info
+Nelement = 1368500
+Nnode = 685906
+
+Margin/dy       N nodes    err_L2 (%)   time (s)  
+---------       -------    ------       --------  
+3               2916       6.01e-01     0.086     
+5               5656       4.60e-01     0.186     
+10              16006      3.73e-01     0.935     
+20              51706      3.33e-01     7.236     
+40              183106     3.09e-01     85.969    
+80              685906     2.95e-01     1217.677  
+FEM-BEM(ref)    2916       --           5.613     
