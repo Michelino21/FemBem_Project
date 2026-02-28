@@ -96,8 +96,8 @@ d_elm = find((ymid < dy/2) & (ymid > -dy/2) & (xmid > -dx/2) & (xmid < dx/2));
 % *************************************************************************
 % Plot results
 % *************************************************************************
-plot_flag = 0; % flag showing whether the mesh will be plotted or not
-if plot_flag
+plot_mesh_flag = 0; % flag showing whether the mesh will be plotted or not
+if plot_mesh_flag
     figure; hold on
     triplot(conn, x, y)
     axis equal tight; 
@@ -114,12 +114,15 @@ end
 % *************************************************************************
 qual = triangle_quality2(x(conn),y(conn));
 
-figure; set(gcf,'Color',[1 1 1]);
-plot(1:M, qual, 'k'); 
-title('Element Quality');
-xlabel('Element No');
-ylabel('Quality');
-hold on
-ys = 0.25*ones(1,M);
-plot(ys, 'r','LineWidth',1.5)
-axis([1 M 0 1]);
+plot_quality_flag = 0;
+if plot_quality_flag
+    figure; set(gcf,'Color',[1 1 1]);
+    plot(1:M, qual, 'k'); 
+    title('Element Quality');
+    xlabel('Element No');
+    ylabel('Quality');
+    hold on
+    ys = 0.25*ones(1,M);
+    plot(ys, 'r','LineWidth',1.5)
+    axis([1 M 0 1]);
+end

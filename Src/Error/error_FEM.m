@@ -11,7 +11,7 @@ function [] = error_FEM(dx,dy,delx,dely,e0,er,V1,V2,u_FEM_BEM,t_FEM_BEM)
     [C_ref, ~] = compute_capacitance(conn_r, x_r, y_r, d_elm_r, e0, er, u_FEM_BEM, V1, V2);
     
     
-    margini = [3, 5, 10, 20, 30, 40, 50, 100] * dy;
+    margini = [3, 5, 10, 20, 40, 80] * dy;
     n_test  = length(margini);
     
     err_L2  = zeros(n_test, 1);
@@ -22,7 +22,7 @@ function [] = error_FEM(dx,dy,delx,dely,e0,er,V1,V2,u_FEM_BEM,t_FEM_BEM)
     %% === STEP 2: FEM PURO CON MARGINI CRESCENTI ===
     
     for k = 1:n_test
-        disp(['--- k_fem: ' num2str(k) '---']);
+        disp(['--- k_fem: ' num2str(k) ' , margin: ' margini(k) '---']);
         Lx_k = dx + 2*margini(k);
         Ly_k = dy + 2*margini(k);
         
@@ -51,11 +51,11 @@ function [] = error_FEM(dx,dy,delx,dely,e0,er,V1,V2,u_FEM_BEM,t_FEM_BEM)
         [C_k, ~] = compute_capacitance(conn_k, x_k, y_k, d_elm_k, e0, er, u_fem_k, V1, V2);
         err_C(k) = abs(C_k - C_ref) / abs(C_ref);
         
-        disp(['Margine = ' num2str(margini(k)/dy) '*dy  |  ' ...
-              'N = ' num2str(N_nodes(k)) '  |  ' ...
-              't = ' num2str(t_fem(k)) ' s  |  ' ...
-              'err_L2 = ' num2str(err_L2(k)) '  |  ' ...
-              'err_C = ' num2str(err_C(k)*100) '%'])
+        % disp(['Margine = ' num2str(margini(k)/dy) '*dy  |  ' ...
+              %'N = ' num2str(N_nodes(k)) '  |  ' ...
+              %'t = ' num2str(t_fem(k)) ' s  |  ' ...
+              %'err_L2 = ' num2str(err_L2(k)) '  |  ' ...
+              %'err_C = ' num2str(err_C(k)*100) '%'])
     end
     
     %% === STEP 3: PLOT RISULTATI ===
@@ -70,13 +70,14 @@ function [] = error_FEM(dx,dy,delx,dely,e0,er,V1,V2,u_FEM_BEM,t_FEM_BEM)
     title('Pure FEM accuracy vs domain size (reference: FEM-BEM)');
     grid on
     
+    
     % --- Errore capacitanza vs margine ---
-    figure('Color','w');
-    semilogy(margini_label, err_C*100, 'rs-', 'LineWidth', 2, 'MarkerSize', 8)
-    xlabel('Domain margin / dy');
-    ylabel('Relative error on C (%)');
-    title('Capacitance error vs domain size');
-    grid on
+    %figure('Color','w');
+    %semilogy(margini_label, err_C*100, 'rs-', 'LineWidth', 2, 'MarkerSize', 8)
+    %xlabel('Domain margin / dy');
+    %ylabel('Relative error on C (%)');
+    %title('Capacitance error vs domain size');
+    %grid on
     
     % --- Tempo vs N nodi ---
     figure('Color','w');
@@ -91,14 +92,14 @@ function [] = error_FEM(dx,dy,delx,dely,e0,er,V1,V2,u_FEM_BEM,t_FEM_BEM)
     legend; grid on
     
     % --- Tabella riassuntiva ---
-    fprintf('\n%-15s %-10s %-12s %-12s %-10s\n', ...
-        'Margin/dy', 'N nodes', 'err_L2', 'err_C (%)', 'time (s)');
-    fprintf('%-15s %-10s %-12s %-12s %-10s\n', ...
-        '---------', '-------', '------', '---------', '--------');
+    fprintf('\n%-15s %-10s %-12s %-10s\n', ...
+        'Margin/dy', 'N nodes', 'err_L2 (%)', 'time (s)'); %'err_C (%)'
+    fprintf('%-15s %-10s %-12s %-10s\n', ...
+        '---------', '-------', '------', '--------');
     for k = 1:n_test
-        fprintf('%-15.0f %-10d %-12.2e %-12.2f %-10.3f\n', ...
-            margini_label(k), N_nodes(k), err_L2(k), err_C(k)*100, t_fem(k));
+        fprintf('%-15.0f %-10d %-12.2e %-10.3f\n', ...
+            margini_label(k), N_nodes(k), err_L2(k), t_fem(k)); %err_C(k)*100
     end
-    fprintf('%-15s %-10d %-12s %-12s %-10.3f\n', ...
-        'FEM-BEM(ref)', length(x_r), '--', '--', t_FEM_BEM);
+    fprintf('%-15s %-10d %-12s %-10.3f\n', ...
+        'FEM-BEM(ref)', length(x_r), '--', t_FEM_BEM);
 end

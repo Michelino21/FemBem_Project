@@ -1,7 +1,7 @@
 Mesh Info
 Nelement = 896
 Nnode = 495
-FEM-BEM time: 1.4857 s
+FEM-BEM time: 1.1444 s
 ------- E Field -------
 E_teorico = 100 V/m
 Fattore Soglia = 5%
@@ -18,3 +18,41 @@ Q piastra superiore = 1.1687e-10 C/m
 Q piastra inferiore = -1.1687e-10 C/m
 Somma Q_top + Q_bot = 8.043e-17 C/m  (deve essere ~0)
 Rapporto Q_top/Q_bot = -1  (deve essere ~-1)
+------- ERRORI -------
+Mesh Info
+Nelement = 896
+Nnode = 495
+--- k_fem: 1 , margin:  ---
+Mesh Info
+Nelement = 896
+Nnode = 495
+--- k_fem: 2 , margin:  ---
+Mesh Info
+Nelement = 1760
+Nnode = 943
+--- k_fem: 3 , margin:  ---
+Mesh Info
+Nelement = 5040
+Nnode = 2623
+--- k_fem: 4 , margin:  ---
+Mesh Info
+Nelement = 16400
+Nnode = 8383
+--- k_fem: 5 , margin:  ---
+Mesh Info
+Nelement = 58320
+Nnode = 29503
+--- k_fem: 6 , margin:  ---
+Mesh Info
+Nelement = 218960
+Nnode = 110143
+
+Margin/dy       N nodes    err_L2 (%)   time (s)  
+---------       -------    ------       --------  
+3               495        5.95e-01     0.040     
+5               943        4.53e-01     0.026     
+10              2623       3.69e-01     0.067     
+20              8383       3.30e-01     0.328     
+40              29503      3.08e-01     2.618     
+80              110143     2.95e-01     31.361    
+FEM-BEM(ref)    495        --           1.144     

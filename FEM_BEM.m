@@ -3,13 +3,13 @@
 clear all; close all; clc;
 addpath(genpath('src'));
 
-SALVATAGGIO = 0;
+SALVATAGGIO = 1;
 
 %% SALVATAGGI
 if(SALVATAGGIO == 1)
 
     % Scegli il nome della cartella
-    folder_name = './Documentation/figures/fine';  % cambia qui per ogni run
+    folder_name = './Documentation/figures/coarse';  % cambia qui per ogni run
     
     % Crea la cartella se non esiste
     if ~exist(folder_name, 'dir')
@@ -32,7 +32,7 @@ end
 %% === PROBLEM PARAMETERS ===
 dx   = 0.10;          % lunghezza piastre
 dy   = 0.01;          % separazione piastre  →  rapporto dx/dy = 10
-delx = 0.002;         % passo mesh (20 elementi lungo dx, 2 lungo dy)
+delx = 0.005;         % passo mesh (20 elementi lungo dx, 2 lungo dy)
 dely = delx;
 
 margine = 3 * dy;     % = 0.03 m per lato
@@ -339,6 +339,10 @@ disp(['Q piastra inferiore = ' num2str(Q_bot) ' C/m'])
 disp(['Somma Q_top + Q_bot = ' num2str(Q_top + Q_bot) ' C/m  (deve essere ~0)'])
 disp(['Rapporto Q_top/Q_bot = ' num2str(Q_top/Q_bot) '  (deve essere ~-1)'])
 
+
+%% ERROR
+error_FEM(dx,dy,delx,dely,e0,er,V1,V2,u,t_FEM_BEM);
+
 %% SALVATAGGI
 if(SALVATAGGIO == 1)
 
@@ -357,8 +361,10 @@ if(SALVATAGGIO == 1)
     saveas(figure(6), fullfile(folder_name, 'charge_density.png'));
     saveas(figure(7), fullfile(folder_name, 'E_histogram.png'));
     saveas(figure(8), fullfile(folder_name, 'bad_elements.png'));
+    saveas(figure(9), fullfile(folder_name, 'L2_norm.png'));
+    saveas(figure(10), fullfile(folder_name, 'time.png'));
 end
 
 
 
-error_FEM(dx,dy,delx,dely,e0,er,V1,V2,u,t_FEM_BEM);
+

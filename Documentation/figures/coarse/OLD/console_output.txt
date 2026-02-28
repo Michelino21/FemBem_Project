@@ -1,0 +1,20 @@
+Mesh Info
+Nelement = 896
+Nnode = 495
+FEM-BEM time: 1.4857 s
+------- E Field -------
+E_teorico = 100 V/m
+Fattore Soglia = 5%
+E_soglia    = 105 V/m
+Elementi con E > soglia: 0
+Elementi con E <= soglia: 80
+Flux of E on Gamma = -3.2389e-13 V*m
+------- Capacitanza -------
+C (FEM region) = 116.8737 pF/m
+C (inside) = 88.5 pF/m
+C (NO bad el) = 88.5 pF/m
+------- Carica Piastre -------
+Q piastra superiore = 1.1687e-10 C/m
+Q piastra inferiore = -1.1687e-10 C/m
+Somma Q_top + Q_bot = 8.043e-17 C/m  (deve essere ~0)
+Rapporto Q_top/Q_bot = -1  (deve essere ~-1)
