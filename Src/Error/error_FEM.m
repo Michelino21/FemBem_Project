@@ -2,7 +2,7 @@ function [] = error_FEM(dx,dy,delx,dely,e0,er,V1,V2,u_FEM_BEM,t_FEM_BEM)
     disp("------- ERRORI -------")
     %% === STEP 1: SETUP
     % Calcola C di riferimento
-    margine = 3 * dy;     
+    margine = 5 * dy;     
     Lx_ref = dx + 2*margine;
     Ly_ref = dy + 2*margine;
 
@@ -11,7 +11,7 @@ function [] = error_FEM(dx,dy,delx,dely,e0,er,V1,V2,u_FEM_BEM,t_FEM_BEM)
     [C_ref, ~] = compute_capacitance(conn_r, x_r, y_r, d_elm_r, e0, er, u_FEM_BEM, V1, V2);
     
     
-    margini = [3, 5, 10, 20, 40, 80] * dy;
+    margini = [5, 10, 20] * dy;
     n_test  = length(margini);
     
     err_L2  = zeros(n_test, 1);
@@ -22,7 +22,7 @@ function [] = error_FEM(dx,dy,delx,dely,e0,er,V1,V2,u_FEM_BEM,t_FEM_BEM)
     %% === STEP 2: FEM PURO CON MARGINI CRESCENTI ===
     
     for k = 1:n_test
-        disp(['--- k_fem: ' num2str(k) ' , margin: ' margini(k) '---']);
+        disp(['--- k_fem: ' num2str(k) ' , margin: ' num2str(margini(k)) '---']);
         Lx_k = dx + 2*margini(k);
         Ly_k = dy + 2*margini(k);
         

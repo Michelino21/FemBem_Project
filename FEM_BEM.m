@@ -3,7 +3,7 @@
 clear all; close all; clc;
 addpath(genpath('src'));
 
-SALVATAGGIO = 1;
+SALVATAGGIO = 0';
 
 %% SALVATAGGI
 if(SALVATAGGIO == 1)
@@ -30,14 +30,24 @@ if(SALVATAGGIO == 1)
 
 end
 %% === PROBLEM PARAMETERS ===
-dx   = 0.10;          % lunghezza piastre
-dy   = 0.01;          % separazione piastre  →  rapporto dx/dy = 10
-delx = 0.002;         % passo mesh (20 elementi lungo dx, 2 lungo dy)
+%dx   = 0.10;          % lunghezza piastre
+%dy   = 0.01;          % separazione piastre  →  rapporto dx/dy = 10
+%delx = 0.001;         % passo mesh
+%dely = delx;
+
+%margine = 3 * dy;     % = 0.03 m per lato
+%Lx = dx + 2*margine;  % = 0.16 m
+%Ly = dy + 2*margine;  % = 0.07 m
+
+dx   = 0.20;          % lunghezza piastre
+dy   = 0.04;          % separazione piastre  →  rapporto dx/dy = 10
+delx = 0.002;         % passo mesh
 dely = delx;
 
-margine = 3 * dy;     % = 0.03 m per lato
+margine = 5 * dy;     % = 0.03 m per lato
 Lx = dx + 2*margine;  % = 0.16 m
 Ly = dy + 2*margine;  % = 0.07 m
+
 
 e0  = 8.85e-12;
 er  = 1;
