@@ -2,16 +2,18 @@ function [] = error_FEM(dx,dy,delx,dely,e0,er,V1,V2,u_FEM_BEM,t_FEM_BEM)
     disp("------- ERRORI -------")
     %% === STEP 1: SETUP
     % Calcola C di riferimento
-    margine = 5 * dy;     
+    margine = 3 * dy;     
     Lx_ref = dx + 2*margine;
     Ly_ref = dy + 2*margine;
 
     [conn_r, x_r, y_r, ~, ~, outb_r, ptop_r, pbottom_r, d_elm_r] = ...
         meshgen_cap(Lx_ref, Ly_ref, dx, dy, delx, dely);
     [C_ref, ~] = compute_capacitance(conn_r, x_r, y_r, d_elm_r, e0, er, u_FEM_BEM, V1, V2);
+
+    size(u_FEM_BEM)
     
     
-    margini = [5, 10, 20] * dy;
+    margini = [50,100,150,200] * dy;
     n_test  = length(margini);
     
     err_L2  = zeros(n_test, 1);
@@ -43,6 +45,8 @@ function [] = error_FEM(dx,dy,delx,dely,e0,er,V1,V2,u_FEM_BEM,t_FEM_BEM)
         
         % Nodi interni (escludi bordo e piastre)
         inner = setdiff(1:length(x_r), [outb_r; ptop_r; pbottom_r]);
+
+        size(inner)
         
         diff_u = u_fem_on_ref(inner) - u_FEM_BEM(inner);
         err_L2(k) = sqrt(sum(diff_u.^2) / sum(u_FEM_BEM(inner).^2));
