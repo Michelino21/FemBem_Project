@@ -697,7 +697,7 @@ In the discrete FEM setting, we compute $\sigma$ by evaluating the gradient of t
     \]
 \end{enumerate}
 
-For linear finite elements, the gradient is constant within each element. The charge density at a given node on the plate can be obtained by averaging the contributions from all adjacent elements. The total charge per unit length on each plate is then computed by integrating the discrete charge density:
+For linear finite elements, the gradient is constant within each element. The total charge per unit length on each plate is then computed by integrating the discrete charge density:
 \begin{equation}
 Q = \int_{\text{plate}} \sigma\, ds 
 \approx 
@@ -988,9 +988,7 @@ well-known behaviour of a finite parallel-plate capacitor where field concentrat
 the tips produces a higher local charge density.
 
 The two plates carry distributions of opposite sign, as required by the problem setup. 
-For linear finite elements, the gradient of the potential is constant within each element. 
-The charge density at a node on the plate is therefore obtained by averaging the 
-contributions from all elements sharing that node. The total charge per unit length on 
+For linear finite elements, the gradient of the potential is constant within each element. The total charge per unit length on 
 each plate is then computed by integrating the discrete charge density along the plate:
 \begin{equation}
 Q = \int_{\text{plate}} \sigma\, ds 
