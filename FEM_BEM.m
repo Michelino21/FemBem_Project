@@ -3,13 +3,13 @@
 clear all; close all; clc;
 addpath(genpath('src'));
 
-SALVATAGGIO = 0';
+SALVATAGGIO = 1;
 
 %% SALVATAGGI
 if(SALVATAGGIO == 1)
 
     % Scegli il nome della cartella
-    folder_name = './Documentation/figures/coarse_2';  % cambia qui per ogni run
+    folder_name = './Documentation/figures/fine_margin_10';  % cambia qui per ogni run
     
     % Crea la cartella se non esiste
     if ~exist(folder_name, 'dir')
@@ -32,10 +32,11 @@ end
 %% === PROBLEM PARAMETERS ===
 Lx   = 0.10;          % lunghezza piastre
 Ly   = 0.01;          % separazione piastre  →  rapporto Lx/Ly = 10
-delx = 0.005;         % passo mesh
+delx = 0.002;         % passo mesh
 dely = delx;
 
-margine = 3 * Ly;     % = 0.03 m per lato
+margin_BEM_coeff = 10;
+margine = margin_BEM_coeff * Ly;     % = 0.03 m per lato
 X_mesh = Lx + 2*margine;  % = 0.16 m
 Y_mesh = Ly + 2*margine;  % = 0.07 m
 
@@ -45,6 +46,24 @@ er  = 1;
 V1  = 1;   % potenziale piastra superiore
 V2  = 0;   % potenziale piastra inferiore
 
+% ===== DISPLAY =====
+fprintf('\n--- PARAMETRI GEOMETRICI ---\n');
+fprintf('Lx   = %.4f m\n', Lx);
+fprintf('Ly   = %.4f m\n', Ly);
+fprintf('delx = %.4f m\n', delx);
+fprintf('dely = %.4f m\n', dely);
+
+fprintf('\n--- MARGINI DOMINIO ---\n');
+fprintf('margin_BEM_coeff = %d\n', margin_BEM_coeff);
+fprintf('margine = %.4f m\n', margine);
+fprintf('X_mesh  = %.4f m\n', X_mesh);
+fprintf('Y_mesh  = %.4f m\n', Y_mesh);
+
+fprintf('\n--- PARAMETRI FISICI ---\n');
+fprintf('e0 = %.3e F/m\n', e0);
+fprintf('er = %.2f\n', er);
+fprintf('V1 = %.2f V\n', V1);
+fprintf('V2 = %.2f V\n', V2);
 %% === SOLVER PARAMETERS ===
 elm_type = 1; % 1: triangular, 2: quadrilateral %% Only triangular
 
@@ -175,6 +194,8 @@ set(gcf,'Color',[1 1 1]); hold on
 plot(x(ptop_node),    y(ptop_node),    'k', 'linewidth', 5)
 plot(x(pbottom_node), y(pbottom_node), 'k', 'linewidth', 5)
 
+salva_fig('potential_map.png', folder_name, SALVATAGGIO);
+
 % --- Plot potenziale (linee di livello) ---
 figure('Color', 'w');  % crea la figura con sfondo bianco
 clf;                    % pulisce la figura
@@ -186,6 +207,7 @@ set(gcf,'Color',[1 1 1]); hold on
 plot(x(ptop_node),    y(ptop_node),    'k', 'linewidth', 5)
 plot(x(pbottom_node), y(pbottom_node), 'k', 'linewidth', 5)
 
+salva_fig('potential_contour.png', folder_name, SALVATAGGIO);
 
 %% === CAMPO ELETTRICO INTERNO === (Step 1.b)
 
@@ -211,12 +233,16 @@ quiver(xmid, ymid, Ex, Ey, 'color', 'k')
 plot(x(ptop_node),    y(ptop_node),    'k', 'linewidth', 5)
 plot(x(pbottom_node), y(pbottom_node), 'k', 'linewidth', 5)
 
+salva_fig('Efield_map.png', folder_name, SALVATAGGIO);
+
 
 % Visualizza distribuzione di E su d_elm
 figure
 histogram(Emag(d_elm), 50)
 xlabel('|E| (V/m)'); ylabel('Conteggio elementi');
 title('Distribuzione campo elettrico in d\_elm')
+
+salva_fig('Efield_histogram.png', folder_name, SALVATAGGIO);
 
 % Trova gli elementi problematici
 disp("------- E Field -------")
@@ -244,6 +270,8 @@ plot(x(ptop_node), y(ptop_node), 'k', 'linewidth', 3)
 plot(x(pbottom_node), y(pbottom_node), 'k', 'linewidth', 3)
 title('Elementi con E anomalo (rosso)')
 
+salva_fig('Efield_bad_elements.png', folder_name, SALVATAGGIO);
+
 
 %% === DERIVATA NORMALE SU GAMMA (per post-processing e soluzione esterna) === (Step 2)
 % Segno più perché q_FEM = q_BEM
@@ -258,6 +286,7 @@ ylabel('\partial u / \partial n');
 title('Derivata normale su \Gamma (uscente da \Omega_{int})');
 grid on
 
+salva_fig('q_gamma.png', folder_name, SALVATAGGIO);
 
 % Riordina q_FEM nell'ordine geometrico di B_ordered
 q_ordered = q_FEM(perm);
@@ -301,6 +330,8 @@ plot(x(ptop_node),    y(ptop_node),    'k', 'LineWidth', 4)
 plot(x(pbottom_node), y(pbottom_node), 'k', 'LineWidth', 4)
 xlabel('x (m)'); ylabel('y (m)')
 title('\partial u / \partial n on \Gamma , E \cdot n , n positive going outside')
+
+salva_fig('q_gamma_ordered.png', folder_name, SALVATAGGIO);
 
 
 % --- Flusso di E
@@ -659,13 +690,14 @@ for i = 1:length(elements_top)
     
     if length(nodes_on_plate) >= 2
         % Calcola lunghezza del lato sulla piastra
-        x1 = x(nodes_on_plate(1));
-        y1 = y(nodes_on_plate(1));
-        x2 = x(nodes_on_plate(2));
-        y2 = y(nodes_on_plate(2));
+        %x1 = x(nodes_on_plate(1));
+        %y1 = y(nodes_on_plate(1));
+        %x2 = x(nodes_on_plate(2));
+        %y2 = y(nodes_on_plate(2));
         
-        length_segment = sqrt((x2-x1)^2 + (y2-y1)^2);
+        %length_segment = sqrt((x2-x1)^2 + (y2-y1)^2);
         
+        length_segment = abs(x(nodes_on_plate(2)) - x(nodes_on_plate(1)));
         % Contributo alla carica totale
         Q_top = Q_top + sigma_top(i) * length_segment;
     end
@@ -726,6 +758,7 @@ xlabel('Indice elemento');
 ylabel('\sigma [C/m^2]');
 grid on;
 
+salva_fig('charge_density.png', folder_name, SALVATAGGIO);
 
 %%  === CAPACITA'  === (Step 4.b)
 
@@ -785,28 +818,13 @@ fprintf('ΔV         = %.6f V\n', Delta_V);
 
 
 %% ERROR
-error_FEM(Lx,Ly,delx,dely,e0,er,V1,V2,u,t_FEM_BEM);
+error_FEM(Lx,Ly,delx,dely,e0,er,V1,V2,u,t_FEM_BEM,folder_name,SALVATAGGIO);
 
 %% SALVATAGGI
 if(SALVATAGGIO == 1)
 
     % Fine del logging
     diary off
-
-
-    % Salva tutte le figure
-    %saveas(figure(1), fullfile(folder_name, 'mesh.png'));
-    %saveas(figure(2), fullfile(folder_name, 'element_quality.png'));
-    saveas(figure(1), fullfile(folder_name, 'potential_map.png'));
-    saveas(figure(2), fullfile(folder_name, 'potential_contour.png'));
-    saveas(figure(3), fullfile(folder_name, 'efield_map.png'));
-    saveas(figure(4), fullfile(folder_name, 'q_gamma.png'));
-    saveas(figure(5), fullfile(folder_name, 'q_gamma_ordered.png'));
-    saveas(figure(6), fullfile(folder_name, 'charge_density.png'));
-    saveas(figure(7), fullfile(folder_name, 'E_histogram.png'));
-    saveas(figure(8), fullfile(folder_name, 'bad_elements.png'));
-    saveas(figure(9), fullfile(folder_name, 'L2_norm.png'));
-    saveas(figure(10), fullfile(folder_name, 'time.png'));
 end
 
 

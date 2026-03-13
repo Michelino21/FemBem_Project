@@ -1,0 +1,136 @@
+
+--- PARAMETRI GEOMETRICI ---
+Lx   = 0.1000 m
+Ly   = 0.0100 m
+delx = 0.0020 m
+dely = 0.0020 m
+
+--- MARGINI DOMINIO ---
+margin_BEM_coeff = 5
+margine = 0.0500 m
+X_mesh  = 0.2000 m
+Y_mesh  = 0.1100 m
+
+--- PARAMETRI FISICI ---
+e0 = 8.850e-12 F/m
+er = 1.00
+V1 = 1.00 V
+V2 = 0.00 V
+Mesh Info
+Nelement = 11000
+Nnode = 5656
+FEM-BEM time: 10.2136 s
+    "POST-PROCESSING"
+
+------- E Field -------
+E_teorico = 100 V/m
+Fattore Soglia = 5%
+E_soglia    = 105 V/m
+Elementi con E > soglia: 12
+Elementi con E <= soglia: 488
+Flux of E on Gamma = -4.1354e-12 V*m
+    "====== POTENZIALE ESTERNO ======"
+
+Calcolo potenziale esterno lungo 4 direzioni...
+  Direzione Sopra (+y): completata
+  Direzione Sotto (-y): completata
+  Direzione Destra (+x): completata
+  Direzione Sinistra (-x): completata
+  Sopra (+y): pendenza = -2.11 (teorica: -1 per dipolo)
+  Sotto (-y): pendenza = -2.11 (teorica: -1 per dipolo)
+  Destra (+x): pendenza = -1.85 (teorica: -1 per dipolo)
+  Sinistra (-x): pendenza = -1.85 (teorica: -1 per dipolo)
+Calcolo mappa 2D (100 × 100 punti)...
+  Progresso: 10/100 righe
+  Progresso: 20/100 righe
+  Progresso: 30/100 righe
+  Progresso: 40/100 righe
+  Progresso: 50/100 righe
+  Progresso: 60/100 righe
+  Progresso: 70/100 righe
+  Progresso: 80/100 righe
+  Progresso: 90/100 righe
+  Progresso: 100/100 righe
+Grafici completati!
+Carica totale piastra superiore: Q_top = 8.908024e-11 C/m
+Carica totale piastra inferiore: Q_bottom = -8.907941e-11 C/m
+Somma (dovrebbe essere ~0): Q_tot = 8.304734e-16 C/m
+Rapporto Q_top/Q_bot = -1  (deve essere ~-1)Densità di carica media piastra superiore: 8.895686e-10 C/m^2
+Densità di carica media piastra inferiore: -8.895579e-10 C/m^2
+
+========== CAPACITANZA ==========
+Capacitanza (da piastra superiore): C = 8.908024e-11 F/m
+Capacitanza (da piastra inferiore): C = 8.907941e-11 F/m
+Capacitanza media: C = 8.907982e-11 F/m
+Capacitanza teorica (piano infinito): C_th = 8.850000e-11 F/m
+Errore relativo: 0.66%
+ Lx = 0.100000 m
+Ly = 0.010000 m
+Q_{top}    = +8.908024e-11 C/m
+Q_{bottom} = -8.907941e-11 C/m
+Q_{sum} = +8.304734e-16 C/m
+ΔV         = 1.000000 V
+------- ERRORI -------
+Mesh Info
+Nelement = 11000
+Nnode = 5656
+
+ans =
+
+        5656           1
+
+--- k_fem: 1 , margin: 0.05---
+Mesh Info
+Nelement = 11000
+Nnode = 5656
+
+ans =
+
+           1        5244
+
+--- k_fem: 2 , margin: 0.1---
+Mesh Info
+Nelement = 31500
+Nnode = 16006
+
+ans =
+
+           1        5244
+
+--- k_fem: 3 , margin: 0.2---
+Mesh Info
+Nelement = 102500
+Nnode = 51706
+
+ans =
+
+           1        5244
+
+--- k_fem: 4 , margin: 0.4---
+Mesh Info
+Nelement = 364500
+Nnode = 183106
+
+ans =
+
+           1        5244
+
+--- k_fem: 5 , margin: 0.5---
+Mesh Info
+Nelement = 555500
+Nnode = 278806
+
+ans =
+
+           1        5244
+
+{Unrecognized function or variable 'folder_name'.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('error_FEM', '/Users/matteo/Documents/AAA Doc Teo/Polimi/Magistrale/COMPUTATIONAL ELECTROMAGNETICS/PROJECT FEM_BEM COUPLING/Src/Error/error_FEM.m', 79)" style="font-weight:bold">error_FEM</a> (<a href="matlab: opentoline('/Users/matteo/Documents/AAA Doc Teo/Polimi/Magistrale/COMPUTATIONAL ELECTROMAGNETICS/PROJECT FEM_BEM COUPLING/Src/Error/error_FEM.m',79,0)">line 79</a>)
+    salva_fig('L2_norm.png', folder_name, SALVATAGGIO);
+                             ^^^^^^^^^^^
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('FEM_BEM', '/Users/matteo/Documents/AAA Doc Teo/Polimi/Magistrale/COMPUTATIONAL ELECTROMAGNETICS/PROJECT FEM_BEM COUPLING/FEM_BEM.m', 820)" style="font-weight:bold">FEM_BEM</a> (<a href="matlab: opentoline('/Users/matteo/Documents/AAA Doc Teo/Polimi/Magistrale/COMPUTATIONAL ELECTROMAGNETICS/PROJECT FEM_BEM COUPLING/FEM_BEM.m',820,0)">line 820</a>)
+error_FEM(Lx,Ly,delx,dely,e0,er,V1,V2,u,t_FEM_BEM);
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+} 
+FEM_BEM
